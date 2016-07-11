@@ -5,7 +5,7 @@ let fs = require('fs');
 // 재귀 호출의 기저 사례(base case)
 // 재귀호출에서 '문제'란 항상 수행해야할 작업과 그 작업을 적용할 자료의 조합을 말한다.
 
-// 보드를 덮을 수 있는 4가지 경우의 수, 수학에서의 y 좌표와는 상하를 반전해서 생각해야 한다. 아래쪽 방향이 y 좌표 + 이다.
+// 보드를 덮을 수 있는 4가지 경우의 수
 const coverTypes = [
     [[0, 0], [1, 0], [1, 1]],
     [[0, 1], [0, 0], [1, 0]],
@@ -13,61 +13,49 @@ const coverTypes = [
     [[0, 0], [1, 0], [1, -1]]
 ];
 
-function setCover(y, x, board, type) {
+// 이미 덮이거나 검은 칸은 1로 표시한다고 정의하면 delta 값 변경만으로 set/unset 을 할 수 있다. 참고할만한 테크닉.
+function setCover(y, x, board, type, delta) {
     let canDo = true;
 
     for (let yx of type) {
         let newY = y+yx[0];
         let newX = x+yx[1];
-        if (!board[newY] || board[newY][newX] !== 0) {
-            canDo = false;
-            break;
-        }
-    }
 
-    if (canDo) {
-        for (let yx of type) {
-            board[y+yx[0]][x+yx[1]] = 1;
+        if (newY < 0 || newY >= board.length || newX < 0 || newX >= board[0].length) {
+            canDo = false;
+        } else if ((board[newY][newX] += delta) > 1) {
+            canDo = false
         }
     }
 
     return canDo;
 }
 
-function unsetCover(y, x, board, type) {
-    for (let yx of type) {
-        board[y+yx[0]][x+yx[1]] = 0;
-    }
-}
-
-function coverCase(lastY, board, whiteCount) {
-    // 모든 흰 칸이 덮였을때
-    if (whiteCount === 0) return 1;
-
-    let caseCount = 0;
+function coverCase(board) {
     let firstY = -1, firstX = -1;
 
-    for (let i = lastY; i < board.length; ++i) {
-        let row = board[i];
-
-        for (let j = 0; j < row.length; ++j) {
-            if (row[j] === 0) {
+    // 남아있는 첫번째 흰 칸의 좌표를 찾는다.
+    for (let i = 0; i < board.length; ++i) {
+        for (let j = 0; j < board[i].length; ++j) {
+            if (board[i][j] === 0) {
                 firstY = i;
                 firstX = j;
                 break;
             }
         }
 
-        if (firstY !== -1) {
-            break;
-        }
+        if (firstY !== -1) break;
     }
 
+    // 모든 흰 칸이 덮였을때
+    if (firstY === -1) return 1;
+
+    let caseCount = 0;
+
     for (let type of coverTypes) {
-        if (setCover(firstY, firstX, board, type)) {
-            caseCount += coverCase(firstY, board, whiteCount - 3);
-            unsetCover(firstY, firstX, board, type);
-        }
+        if (setCover(firstY, firstX, board, type, 1))
+            caseCount += coverCase(board);
+        setCover(firstY, firstX, board, type, -1);
     }
 
     return caseCount;
@@ -91,7 +79,7 @@ fs.readFile('boardcover.txt', 'utf8', function(err, data) {
 
             for (let j = 0; j < cols; ++j) {
                 if (line.charAt(j) === '#') {
-                    board[i][j] = -1;
+                    board[i][j] = 1;
                 } else {
                     board[i][j] = 0;
                     ++whiteCount;
@@ -103,7 +91,7 @@ fs.readFile('boardcover.txt', 'utf8', function(err, data) {
         if (whiteCount % 3 > 0) {
             console.log(0);
         } else {
-            console.log(coverCase(0, board, whiteCount));
+            console.log(coverCase(board));
         }
     }
 });
