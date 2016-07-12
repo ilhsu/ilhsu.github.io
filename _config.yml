@@ -1,32 +1,50 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely need to edit after that.
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'jekyll serve'. If you change this file, please restart the server process.
+# SEO settings
+title: "Devlog"
+title2: "" # default: ""
+description: "This is my Devlog"
+keywords: "java, javascript, IT, development, frontend, backend"
+url: https://ilhsu.github.io #site url
+baseurl: null # apply null if repo name is something like username.github.io
 
-# Site settings
-title: Devlog
-name: Do Hyun
-email: ilhsu@naver.com
-description:
-encoding: utf-8
-baseurl: "" # the subpath of your site, e.g. /blog
-url: https://ilhsu.github.com # the base hostname & protocol for your site
-twitter_username: ilhsu
-github_username:
+google_analytics: UA-80638330-1
+#repo: http://github.com/heiswayi/thinkspace
+disqus_shortname: "devlog-kairos"
+#twitter_username: "HeiswayiNrird"
+comments: true
 
-permalink: /:year/:title/
+# Build settings
+permalink   : /:year/:title/
+markdown    : kramdown
+highlighter : rouge
 
-markdown: kramdown
+source: ./
+destination: ./_site
 
-kramdown:
-  input: GFM
-  syntax_highlighter: rouge
-  syntax_highlighter_opts:
-    css_class: 'highlight'
+# Sass configuration
+sass:
+  sass_dir: assets/scss
+  style: compressed # expanded
+
+# Author settings
+author:
+  name     : "Do Hyun"
+  job      : "Software Engineer"
+  #bio      : "1+1=3 is always TRUE in my world, a balance between binary and reality."
+  #thumb    : /images/author.jpg
+  email    : ilhsu@naver.com
+  #url      : http://heiswayi.github.io
+  #github   : http://github.com/heiswayi
+  #twitter  : http://twitter.com/HeiswayiNrird
+  #facebook : https://www.facebook.com/profile.php?id=1257583160
+  #linkedin : http://linkedin.com/in/nrird
+
+# social settings
+og_locale: "ko_KR"
+#twitter_card: "summary_large_image"
+#twitter_site: "@HeiswayiNrird"
 
 gems:
+  - bourbon
   - jekyll-paginate
-  - jekyll-gist
-  - jekyll-feed
+
+exclude: ["gulp", "node_modules", "bower", "bower_components", "config.rb", "src", "Gemfile", "Gemfile.lock", ".rvmrc", ".rbenv-version", "package.json", "gulpfile.js", "README.md", "Rakefile", "changelog.md"]
